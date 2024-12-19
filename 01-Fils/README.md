@@ -52,19 +52,21 @@ Termina el fil Juan
 #### CODE
 ~~~bash
 public class Principal {
-    public static void  main(String[] args){
+    public static void  main(String[] args)throws InterruptedException{
         Fil juan = new Fil();
         Fil pepe = new Fil();
 
         juan.setName("Juan");
         pepe.setName("Pepe");
         
-        juan.setPriority(Thread.MAX_PRIORITY);
-        pepe.setPriority(Thread.MIN_PRIORITY);
-
         juan.start();
-        pepe.start();
+        juan.join();
 
+        pepe.start();
+        pepe.join();
+
+        System.out.println("Termina el fil "+juan.getName());
+        System.out.println("Termina el fil "+pepe.getName());
     }
 }
 
@@ -74,21 +76,11 @@ public class Fil extends Thread {
         for(int  i = 1; i <= 9; i++){
             System.out.println(getName() + " " + i);
         }
-        System.out.println("Termina el fil "+getName());
     }
 }    
 ~~~
 
 ~~~bash
-Pepe 1
-Pepe 2
-Pepe 3
-Pepe 4
-Pepe 5
-Pepe 6
-Pepe 7
-Pepe 8
-Pepe 9
 Juan 1
 Juan 2
 Juan 3
@@ -98,8 +90,17 @@ Juan 6
 Juan 7
 Juan 8
 Juan 9
-Termina el fil Pepe
+Pepe 1
+Pepe 2
+Pepe 3
+Pepe 4
+Pepe 5
+Pepe 6
+Pepe 7
+Pepe 8
+Pepe 9
 Termina el fil Juan
+Termina el fil Pepe
 ~~~
 
 ## Comportament 3
@@ -127,32 +128,32 @@ public class Fil extends Thread {
     public void run() {
         for(int  i = 1; i <= 9; i++){
             System.out.println(getName() + " " + i);
+            Thread.yield();
         }
-        Thread.yield();
         System.out.println("Termina el fil "+getName());
     }
-}     
+}      
 ~~~
 
 ~~~bash
-Pepe 1
 Juan 1
-Pepe 2
+Pepe 1
 Juan 2
+Pepe 2
 Pepe 3
 Juan 3
 Pepe 4
 Juan 4
-Pepe 5
 Juan 5
-Pepe 6
 Juan 6
-Pepe 7
+Pepe 5
 Juan 7
-Pepe 8
 Juan 8
-Pepe 9
+Pepe 6
 Juan 9
+Pepe 7
+Pepe 8
+Pepe 9
 Termina el fil Pepe
 Termina el fil Juan
 ~~~
