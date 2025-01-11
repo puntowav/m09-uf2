@@ -9,7 +9,7 @@ public class DormAleatori extends Thread{
             time =  System.currentTimeMillis();
             for(int i = 0; i <= 9; i++){
                 long l = r.nextInt(1000);
-                System.err.print(mostra(i, l));
+                System.out.print(mostra(i, l));
                 Thread.sleep(l);
             }
         } catch (InterruptedException e) {
