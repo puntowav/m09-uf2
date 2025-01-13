@@ -15,7 +15,6 @@ public class Motor extends Thread {
     public int getGoal(){return goal;}
     public synchronized void setPotenciaGoal(int potencia){ 
         goal = potencia; 
-        notify();
     }
 
     public String mostra(String s){ return String.format("%nMotor %s: %s Objectiu: %d Actual %d%n", getName(), s, goal, curr);}
@@ -26,11 +25,9 @@ public class Motor extends Thread {
 
         try {
             while (true) {
-                synchronized(this){
-                    while (curr == goal) {
-                        wait();
-                        if(curr == 0 && goal == 0) break;
-                    }
+                while (curr == goal) {
+                    Thread.sleep(100);
+                    if(curr == 0 && goal == 0) break;
                 }
 
                 if(curr <= goal){

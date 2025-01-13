@@ -38,12 +38,17 @@ public class Coet {
             m[i].setName(String.valueOf(i));
         }
         Coet c = new Coet(m);
-        
-        c.arrenca();
+
+        for (Motor motor : c.motors) {
+            System.out.print(motor.mostra("FerRes"));
+        }        
 
         try (Scanner s = new Scanner(System.in)) {
+            int p = s.nextInt();
+            c.passaAPotencia(p);
+            c.arrenca();
             while (true) {
-                int p = s.nextInt();
+                p = s.nextInt();
                 c.passaAPotencia(p);
 
                 if(p == 0) break;
