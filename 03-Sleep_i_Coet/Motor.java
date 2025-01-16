@@ -13,7 +13,7 @@ public class Motor extends Thread {
         curr = potencia; 
     }
     public int getGoal(){return goal;}
-    public synchronized void setPotenciaGoal(int potencia){ 
+    public void setPotenciaGoal(int potencia){ 
         goal = potencia; 
     }
 
