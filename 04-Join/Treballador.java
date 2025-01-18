@@ -19,10 +19,11 @@ public class Treballador extends Thread{
     public float getCobrat(){return cobrat;}
     public int getEdat(){return edat_actual;}
     public void cobra(){
-        cobrat += sou_anual_brut / 12;
+        cobrat += sou_anual_brut;
     }
     public void pagaImpostos(){
-        cobrat -= cobrat * 0.24f;
+        float impost = sou_anual_brut * 0.24f;
+        cobrat = cobrat - impost;
     }
     @Override
     public void run(){
@@ -32,7 +33,6 @@ public class Treballador extends Thread{
                 pagaImpostos();
                 Thread.sleep(rnd.nextInt(100));
             }
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
