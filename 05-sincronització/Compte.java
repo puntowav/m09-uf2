@@ -9,11 +9,11 @@ public class Compte{
 
     private Compte(){}
 
-    public synchronized float getSaldo(){
+    public float getSaldo(){
         return saldo;
     }
 
-    public synchronized void setSaldo(float saldo){
+    public void setSaldo(float saldo){
         this.saldo = saldo;
     }
 }
