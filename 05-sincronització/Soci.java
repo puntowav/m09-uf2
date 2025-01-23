@@ -19,8 +19,11 @@ public class Soci extends Thread {
     public void run(){
         for(int i = 0; i < maxAnys; i++){
             for(int x = 0; x < 12; x++){
-                if(i%2 == 0) compte.setSaldo(compte.getSaldo()+aportacio);
-                else compte.setSaldo(compte.getSaldo()-aportacio);
+                    if(i%2 == 0) {
+                        synchronized(compte){compte.setSaldo(compte.getSaldo()+aportacio);}
+                    }else {
+                        synchronized(compte){compte.setSaldo(compte.getSaldo()-aportacio);}
+                    }
                 try {
                     Thread.sleep(r.nextInt(esperaMax));
                 } catch (InterruptedException e) {
