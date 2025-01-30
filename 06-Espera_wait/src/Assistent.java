@@ -10,15 +10,15 @@ public class Assistent extends Thread{
 
     @Override
     public void run() {
-        Random r = new Random(1000);
+        Random r = new Random();
         while (true) {            
-            if (Math.random() < 0.5) {
+            if (Math.random() < 0.3) {
                 esdeveniment.ferReserva(this);
             }else{
                 esdeveniment.eliminaReserva(this);
             }
             try {
-                Thread.sleep(r.nextInt());
+                Thread.sleep(r.nextInt(1000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
