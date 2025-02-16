@@ -8,12 +8,13 @@ public class Filosof extends Thread{
 
     private static Random r = new Random();
 
-    private static final Object monitor = new Object();
+    private Taula taula;
 
-    public Filosof(int index, Forquilla forquillaEsquerra, Forquilla forquillaDreat){
+    public Filosof(int index, Forquilla forquillaEsquerra, Forquilla forquillaDreat, Taula taula){
         this.index = index;
         this.forquillaDreta = forquillaDreat;
         this.forquillaEsquerra = forquillaEsquerra;
+        this.taula = taula;
     }
     public Forquilla getForquillaEsquerra() {
         return forquillaEsquerra;
@@ -42,7 +43,7 @@ public class Filosof extends Thread{
 
     public void menjar()throws InterruptedException{
         while (true) {
-            synchronized(monitor){
+            synchronized(taula){
                 if(agafarForquilles()){
                     System.out.printf("%nFilòsof: %d menja", getIndex());
                 }else{
@@ -50,16 +51,16 @@ public class Filosof extends Thread{
                     System.out.printf("%nFilòsof: %s deixa l'esquerra(%d) i espera (dreta ocupada)", getName(), forquillaEsquerra.getIndex());
                     setGana(gana + 1);
                     System.out.printf("%nFilòsof: %s gana=%d", getName(), getGana());
-                    monitor.wait(500 + r.nextInt(501));
+                    taula.wait(500 + r.nextInt(501));
                     continue;
                 }
             }
 
             Thread.sleep(r.nextInt(2000 - 1000 + 1));
             setGana(0);
-            synchronized(monitor){
+            synchronized(taula){
                 deixarForquilles();
-                monitor.notifyAll();
+                taula.notifyAll();
             }
             System.out.printf("%nFilòsof: %d ha acabat de menjar", getIndex());
             break;
@@ -95,10 +96,10 @@ public class Filosof extends Thread{
         forquillaDreta.resetNumeroPropietari();
     }
     public void pensar() throws InterruptedException{
-        synchronized(monitor){
+        synchronized(taula){
             System.out.printf("%nFilòsof: %s pensat", getName());
-            monitor.wait(1000 + r.nextInt(1001));
-            monitor.notifyAll();
+            taula.wait(1000 + r.nextInt(1001));
+            taula.notifyAll();
         }
     }
     @Override
