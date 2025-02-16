@@ -8,7 +8,7 @@ public class Taula {
             forquilles[i] = new Forquilla(i);
         }
         comensals = new Filosof[numeroComensals];
-        for(int i = 0; i > numeroComensals; i++){
+        for(int i = 0; i < numeroComensals; i++){
             comensals[i] = new Filosof(i, forquilles[i], (i == numeroComensals-1)?forquilles[0]:forquilles[i+1]);
         }
     }
@@ -25,5 +25,8 @@ public class Taula {
     }
     public static void main(String[] args) {
         Taula t = new Taula(4, 4);
+
+        t.showTaula();
+        t.cridaTaula();
     }
 }
