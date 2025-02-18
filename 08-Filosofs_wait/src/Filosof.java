@@ -57,6 +57,7 @@ public class Filosof extends Thread{
             System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", 
                               getIndex(), forquillaEsquerra.getIndex());
             forquillaEsquerra.resetNumeroPropietari();
+
             return false;
         }
         return false;
