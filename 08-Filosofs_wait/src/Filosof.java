@@ -8,13 +8,10 @@ public class Filosof extends Thread{
 
     private static Random r = new Random();
 
-    private Taula taula;
-
-    public Filosof(int index, Forquilla forquillaEsquerra, Forquilla forquillaDreat, Taula taula){
+    public Filosof(int index, Forquilla forquillaEsquerra, Forquilla forquillaDreat){
         this.index = index;
         this.forquillaDreta = forquillaDreat;
         this.forquillaEsquerra = forquillaEsquerra;
-        this.taula = taula;
     }
     public Forquilla getForquillaEsquerra() {
         return forquillaEsquerra;
@@ -43,27 +40,19 @@ public class Filosof extends Thread{
 
     public void menjar()throws InterruptedException{
         while (true) {
-            synchronized(taula){
-                if(agafarForquilles()){
-                    System.out.printf("%nFilòsof: %d menja", getIndex());
-                }else{
-                    deixarForquilles();
-                    System.out.printf("%nFilòsof: %s deixa l'esquerra(%d) i espera (dreta ocupada)", getName(), forquillaEsquerra.getIndex());
-                    setGana(gana + 1);
-                    System.out.printf("%nFilòsof: %s gana=%d", getName(), getGana());
-                    taula.wait(500 + r.nextInt(501));
-                    continue;
-                }
-            }
-
-            Thread.sleep(r.nextInt(2000 - 1000 + 1));
-            setGana(0);
-            synchronized(taula){
+            if(agafarForquilles()){
+                System.out.printf("%nFilòsof: %d menja", getIndex());
+                Thread.sleep(r.nextInt(2000 - 1000 + 1));
+                setGana(0);
                 deixarForquilles();
-                taula.notifyAll();
+                System.out.printf("%nFilòsof: %d ha acabat de menjar", getIndex());
+                break;
+            }else{
+                deixarForquilles();
+                System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", getIndex(), forquillaEsquerra.getIndex());
+                setGana(gana + 1);
+                System.out.printf("%nFilòsof: %d gana=%d", getIndex(), getGana());
             }
-            System.out.printf("%nFilòsof: %d ha acabat de menjar", getIndex());
-            break;
         }
     }
     public boolean agafarForquilles(){
@@ -71,8 +60,10 @@ public class Filosof extends Thread{
             if(agafarForquillaDreta()){
                 return true;
             }
-            System.out.printf("%nFilòsof: %s deixa l'esquerra(%d) i espera (dreta ocupada)", getName(), forquillaEsquerra.getIndex());
+            System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", getIndex(), forquillaEsquerra.getIndex());
+            
             forquillaEsquerra.resetNumeroPropietari();
+
             return false;
         }
         return false;
@@ -96,11 +87,7 @@ public class Filosof extends Thread{
         forquillaDreta.resetNumeroPropietari();
     }
     public void pensar() throws InterruptedException{
-        synchronized(taula){
-            System.out.printf("%nFilòsof: %s pensat", getName());
-            taula.wait(1000 + r.nextInt(1001));
-            taula.notifyAll();
-        }
+        System.out.printf("%nFilòsof: %d pensat", getIndex());
     }
     @Override
     public void run() {
