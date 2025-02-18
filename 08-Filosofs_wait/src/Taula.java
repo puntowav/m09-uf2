@@ -9,7 +9,7 @@ public class Taula {
         }
         comensals = new Filosof[numeroComensals];
         for(int i = 0; i < numeroComensals; i++){
-            comensals[i] = new Filosof(i, forquilles[i], (i == numeroComensals-1)?forquilles[0]:forquilles[i+1], this);
+            comensals[i] = new Filosof(i, forquilles[i], (i == numeroComensals-1)?forquilles[0]:forquilles[i+1]);
         }
     }
 

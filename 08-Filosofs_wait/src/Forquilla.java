@@ -15,7 +15,7 @@ public class Forquilla {
         return LLIURE;
     }
 
-    public int getNumeroPropietari() {
+    public synchronized int getNumeroPropietari() {
         return numeroPropietari;
     }
 
@@ -23,11 +23,11 @@ public class Forquilla {
         this.index = index;
     }
 
-    public void resetNumeroPropietari() {
+    public synchronized void resetNumeroPropietari() {
         this.numeroPropietari = LLIURE;
     }
-
-    public void setNumeroPropietari(int numeroPropietari) {
+    
+    public synchronized void setNumeroPropietari(int numeroPropietari) {
         this.numeroPropietari = numeroPropietari;
     }
 }
