@@ -8,11 +8,12 @@ public class Filosof extends Thread{
 
     private static Random r = new Random();
 
-    public Filosof(int index, Forquilla forquillaEsquerra, Forquilla forquillaDreat){
+    public Filosof(int index, Forquilla forquillaEsquerra, Forquilla forquillaDreta) {
         this.index = index;
-        this.forquillaDreta = forquillaDreat;
         this.forquillaEsquerra = forquillaEsquerra;
+        this.forquillaDreta = forquillaDreta;
     }
+    
     public Forquilla getForquillaEsquerra() {
         return forquillaEsquerra;
     }
@@ -25,79 +26,84 @@ public class Filosof extends Thread{
     public int getIndex() {
         return index;
     }
-    public void setForquillaEsquerra(Forquilla forquillaEsquerra) {
-        this.forquillaEsquerra = forquillaEsquerra;
-    }
-    public void setForquillaDreta(Forquilla forquillaDreta) {
-        this.forquillaDreta = forquillaDreta;
-    }
     public void setGana(int gana) {
         this.gana = gana;
     }
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public void menjar()throws InterruptedException{
-        while (true) {
-            if(agafarForquilles()){
+    
+    public void menjar() throws InterruptedException {
+        synchronized (this) {
+            if (agafarForquilles()) {
                 System.out.printf("%nFilòsof: %d menja", getIndex());
-                Thread.sleep(r.nextInt(2000 - 1000 + 1));
+                Thread.sleep(r.nextInt(1001) + 1000);
                 setGana(0);
                 deixarForquilles();
                 System.out.printf("%nFilòsof: %d ha acabat de menjar", getIndex());
-                break;
-            }else{
+            } else {
                 deixarForquilles();
-                System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", getIndex(), forquillaEsquerra.getIndex());
+                System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", 
+                                  getIndex(), forquillaEsquerra.getIndex());
                 setGana(gana + 1);
                 System.out.printf("%nFilòsof: %d gana=%d", getIndex(), getGana());
+                wait(500 + r.nextInt(501));
             }
         }
     }
-    public boolean agafarForquilles(){
-        if(agafarForquillaEsquerra()){
-            if(agafarForquillaDreta()){
+    
+    public boolean agafarForquilles() {
+        if (agafarForquillaEsquerra()) {
+            if (agafarForquillaDreta()) {
                 return true;
             }
-            System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", getIndex(), forquillaEsquerra.getIndex());
-            
+            System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", 
+                              getIndex(), forquillaEsquerra.getIndex());
             forquillaEsquerra.resetNumeroPropietari();
-
             return false;
         }
         return false;
     }
-    public boolean agafarForquillaEsquerra(){
-        if(forquillaEsquerra.getNumeroPropietari() == -1) {
+    
+    public boolean agafarForquillaEsquerra() {
+        if (forquillaEsquerra.getNumeroPropietari() == -1) {
             forquillaEsquerra.setNumeroPropietari(index);
             return true;
         }
         return false;
     }
-    public boolean agafarForquillaDreta(){
-        if(forquillaDreta.getNumeroPropietari() == -1) {
+    
+    public boolean agafarForquillaDreta() {
+        if (forquillaDreta.getNumeroPropietari() == -1) {
             forquillaDreta.setNumeroPropietari(index);
             return true;
         }
         return false;
     }
-    public void deixarForquilles(){
-        forquillaEsquerra.resetNumeroPropietari();
-        forquillaDreta.resetNumeroPropietari();
+    
+    public void deixarForquilles() {
+        synchronized(this){
+            forquillaEsquerra.resetNumeroPropietari();
+            forquillaDreta.resetNumeroPropietari();
+            this.notifyAll();
+        }
     }
-    public void pensar() throws InterruptedException{
-        System.out.printf("%nFilòsof: %d pensat", getIndex());
+    
+    public void pensar() throws InterruptedException {
+        System.out.printf("%nFilòsof: %d pensa", getIndex());
+        synchronized (this) {
+            this.wait(1000 + r.nextInt(1000));
+            notifyAll();
+        }
     }
+    
     @Override
     public void run() {
         while (true) {
             try {
                 menjar();
                 pensar();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+    
 }
