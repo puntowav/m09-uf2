@@ -31,13 +31,14 @@ public class Filosof extends Thread{
     }
     
     public void menjar() throws InterruptedException {
-        synchronized (this) {
+        while (true) {
             if (agafarForquilles()) {
                 System.out.printf("%nFilòsof: %d menja", getIndex());
                 Thread.sleep(r.nextInt(1001) + 1000);
                 setGana(0);
                 deixarForquilles();
                 System.out.printf("%nFilòsof: %d ha acabat de menjar", getIndex());
+                break;
             } else {
                 deixarForquilles();
                 System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", 
@@ -49,50 +50,56 @@ public class Filosof extends Thread{
         }
     }
     
-    public boolean agafarForquilles() {
-        if (agafarForquillaEsquerra()) {
-            if (agafarForquillaDreta()) {
-                return true;
+    public boolean agafarForquilles()throws InterruptedException{
+        synchronized(this){
+            while (!agafarForquillaEsquerra()) {
+                wait();
             }
-            System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", 
-                              getIndex(), forquillaEsquerra.getIndex());
-            forquillaEsquerra.resetNumeroPropietari();
-
-            return false;
         }
+
+        if (agafarForquillaDreta()) {
+            return true;
+        }
+
+        System.out.printf("%nFilòsof: %d deixa l'esquerra(%d) i espera (dreta ocupada)", 
+                          getIndex(), forquillaEsquerra.getIndex());
+        forquillaEsquerra.resetNumeroPropietari();
+
         return false;
     }
     
     public boolean agafarForquillaEsquerra() {
-        if (forquillaEsquerra.getNumeroPropietari() == -1) {
-            forquillaEsquerra.setNumeroPropietari(index);
-            return true;
+        synchronized(forquillaEsquerra){
+            if (forquillaEsquerra.getNumeroPropietari() == -1) {
+                forquillaEsquerra.setNumeroPropietari(index);
+                return true;
+            }
         }
         return false;
     }
     
     public boolean agafarForquillaDreta() {
-        if (forquillaDreta.getNumeroPropietari() == -1) {
-            forquillaDreta.setNumeroPropietari(index);
-            return true;
+        synchronized(forquillaDreta){
+            if (forquillaDreta.getNumeroPropietari() == -1) {
+                forquillaDreta.setNumeroPropietari(index);
+                return true;
+            }
         }
         return false;
     }
     
     public void deixarForquilles() {
-        synchronized(this){
+        synchronized(forquillaEsquerra){
             forquillaEsquerra.resetNumeroPropietari();
+        }
+        synchronized(forquillaDreta){
             forquillaDreta.resetNumeroPropietari();
-            this.notifyAll();
         }
     }
     
     public void pensar() throws InterruptedException {
         System.out.printf("%nFilòsof: %d pensa", getIndex());
-        synchronized (this) {
-            this.wait(1000 + r.nextInt(1000));
-            notifyAll();
-        }
+        Thread.sleep(100 + r.nextInt(1001));
     }
     
     @Override
